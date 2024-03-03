@@ -8,7 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     UsersModule , 
-    MongooseModule.forRoot('mongodb://localhost/chatApp'),
+    MongooseModule.forRoot('mongodb://127.0.0.1/chatApp'),
     ConfigModule.forRoot()
   ],
   controllers: [AppController],
