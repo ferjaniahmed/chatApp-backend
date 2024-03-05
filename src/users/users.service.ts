@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './entities/user.schema';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +13,10 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     
     try{
-      const newUser = new this.userDocument(createUserDto)
+      const { password , ...user } = createUserDto
+      const salt = await bcrypt.genSalt();
+      const hash = await bcrypt.hash(password, salt);
+      const newUser = await new this.userDocument({ ...user  , password : hash})
       return await newUser.save()
     }catch(error){
       throw new HttpException({
@@ -31,6 +35,7 @@ export class UsersService {
       throw new HttpException({
         status: HttpStatus.NOT_FOUND,
         error: 'there is no users yet !!!',
+        
       }, HttpStatus.NOT_FOUND, {
         cause: error
       })
