@@ -1,5 +1,6 @@
 import { IsEmail, IsMongoId, IsNotEmpty} from "class-validator";
 import { Role } from "./role";
+import { Exclude } from "class-transformer";
 
 export class UserEntity {
     @IsMongoId()
@@ -7,8 +8,8 @@ export class UserEntity {
     @IsEmail()
     @IsNotEmpty()
     email : string
-    @IsNotEmpty()
-    password : string;
+    @Exclude()
+    password  : string;
     @IsNotEmpty()
     username : string;
     gender  : "male" | "female"
@@ -17,4 +18,9 @@ export class UserEntity {
     //friends : UserEntity[]
     createAt?  : Date
     updateAt?  : Date
+
+
+    constructor(partial : Partial<UserEntity>){
+        Object.assign(this , partial)
+    }
 }

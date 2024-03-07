@@ -44,7 +44,7 @@ export class UsersService {
 
   async findOne(id: string) {
     try{
-      return await this.userDocument.findById(id)
+      return await this.userDocument.findById(id,{})
     }catch(error){
       throw new HttpException({
         status: HttpStatus.NOT_FOUND,
@@ -80,4 +80,18 @@ export class UsersService {
       })
     }
   }
+  async findByUsername(username: string) {
+    try{
+      return await this.userDocument.findOne({username : username })
+    }catch(error){
+      throw new HttpException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'there is no user !!!',
+      }, HttpStatus.NOT_FOUND, {
+        cause: error
+      })
+    }
+  }
+
+
 }
