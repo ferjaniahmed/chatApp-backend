@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
@@ -12,23 +12,30 @@ export class MessagesController {
     return this.messagesService.create(createMessageDto);
   }
 
-  @Get()
-  findAll() {
-    return this.messagesService.findAll();
+  @Get("")
+  async findAll(){
+    return await this.messagesService.findAll()
+  }
+
+
+
+  @Get("reciever/:idReceiver")
+  async findAllMessagesbetweenTwo(@Request() req ,@Param("idReceiver") receiverId : string) {
+    return await this.messagesService.findAllMessagesbetweenTwo(req.user._id , receiverId);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.messagesService.findOne(+id);
+    return this.messagesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMessageDto: UpdateMessageDto) {
-    return this.messagesService.update(+id, updateMessageDto);
+    return this.messagesService.update(id, updateMessageDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.messagesService.remove(+id);
+    return this.messagesService.remove(id);
   }
 }
