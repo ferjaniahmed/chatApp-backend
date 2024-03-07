@@ -30,7 +30,7 @@ export class UsersService {
 
   async findAll() {
     try{
-      return await this.userDocument.find()
+      return await this.userDocument.find().select(["-password"])
     }catch(error){
       throw new HttpException({
         status: HttpStatus.NOT_FOUND,
@@ -44,7 +44,7 @@ export class UsersService {
 
   async findOne(id: string) {
     try{
-      return await this.userDocument.findById(id,{})
+      return await this.userDocument.findById(id).select(["-password"])
     }catch(error){
       throw new HttpException({
         status: HttpStatus.NOT_FOUND,
