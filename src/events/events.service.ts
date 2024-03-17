@@ -10,15 +10,15 @@ export class EventsService {
     return await this.messageService.create(createMessageDto);
   }
 
-  async findAll(user : any) {
-    return await this.messageService.findAllMessagesbetweenTwo(user.id , user.id) ;
+  async findAll(senderId :string , receiverId : string) {
+    return await this.messageService.findAllMessagesbetweenTwo(senderId , receiverId) ;
   }
 
-  update(id: number, updateEventDto) {
+  update(id: number, updateEventDto) {  
     return `This action updates a #${id} event`;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} event`;
+  async remove(id: string) {
+    return await this.messageService.remove(id);
   }
 }
