@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MessagesModule } from './messages/messages.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { MessagesModule } from './messages/messages.module';
     ConfigModule.forRoot({
       isGlobal : true
     }),
-    MessagesModule
+    MessagesModule,
+    EventsModule
   ],
   controllers: [AppController],
   providers: [AppService],

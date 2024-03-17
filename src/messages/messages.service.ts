@@ -29,7 +29,10 @@ export class MessagesService {
 
 
   async findAllMessagesbetweenTwo(senderId : string , receiverId : string) {
-    return await this.messageDocument.find({sender : senderId , receiver : receiverId});
+    return await this.messageDocument.find({$or : [
+      {sender : senderId , receiver : receiverId} , 
+      {sender : receiverId , receiver : senderId}
+    ]});
   }
 
   async findOne(id: string) {
