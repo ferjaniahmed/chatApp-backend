@@ -1,7 +1,9 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, ConnectedSocket, OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection, WsException} from '@nestjs/websockets';
 import { EventsService } from './events.service';
 import { Server , Socket } from 'socket.io';
-import { Logger } from '@nestjs/common';
+import { Logger, UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor } from '@nestjs/cache-manager';
+import { UsersService } from 'src/users/users.service';
 
 @WebSocketGateway({namespace : "events"})
 export class EventsGateway implements OnGatewayConnection , OnGatewayDisconnect {
@@ -15,10 +17,12 @@ export class EventsGateway implements OnGatewayConnection , OnGatewayDisconnect 
 
   constructor(
     private readonly eventsService: EventsService , 
+    private readonly userService : UsersService
   ) {}
 
 
   handleConnection(client: Socket, ...args: any[]) {
+
     client.emit("connection" , "You are connected to the server.")
     this.clients.set(client.id , client)
     console.log(this.clients.keys())
@@ -48,6 +52,7 @@ export class EventsGateway implements OnGatewayConnection , OnGatewayDisconnect 
   }
 
 
+  @UseInterceptors(CacheInterceptor)
   @SubscribeMessage('findAllMessage')
   async findAll(@ConnectedSocket() socket : Socket, @MessageBody() data : any){
     const {senderId , receiverId} = data

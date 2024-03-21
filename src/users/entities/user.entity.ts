@@ -15,7 +15,10 @@ export class UserEntity {
     gender  : "male" | "female"
     @IsNotEmpty()
     role  : Role
-    //friends : UserEntity[]
+    friends : UserEntity[]
+    isOnLine : boolean
+    SocketId : string
+
     createAt?  : Date
     updateAt?  : Date
 
