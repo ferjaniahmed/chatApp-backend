@@ -34,8 +34,8 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
-  @Get("/friends/:id")
-  findfriends(@Param("id") id : string){
+  @Get("/friends/:userId")
+  findfriends(@Param("userId") id : string){
     return this.usersService.findFriends(id)
   }
 
@@ -43,4 +43,13 @@ export class UsersController {
   changeStatus(@Param("id") id : string){ 
     return this.usersService.changeStatus(id)
   }*/
+
+  @Patch("/friend/add")
+  addFriend(@Body("userId") userId : string ,@Body("friendId") friendId : string){
+    return this.usersService.addFriend(userId , friendId)
+  }
+  @Patch("/friend/remove")
+  removeFriend(@Body("userId") userId : string ,@Body("friendId") friendId : string){
+    return this.usersService.removeFriend(userId , friendId)
+  }
 }

@@ -21,11 +21,20 @@ export class EventsGateway implements OnGatewayConnection , OnGatewayDisconnect 
   ) {}
 
 
-  handleConnection(client: Socket, ...args: any[]) {
-
-    client.emit("connection" , "You are connected to the server.")
-    this.clients.set(client.id , client)
-    console.log(this.clients.keys())
+  async handleConnection(client: Socket, ...args: any[]) {
+    //TODO - add socket ID to the connected user
+    const {userId} = client.handshake.query
+    if(userId && userId.length > 0){
+      const user = await this.userService.updadeSocket(userId as string , client.id)
+      if(user){
+        client.emit("connection" , "You are connected to the server.")
+        this.clients.set(client.id , client)
+        console.log(this.clients.keys())
+      }
+    }else{
+      throw new WsException("need user ID to connect at the server")
+    }
+    
   }
 
 
