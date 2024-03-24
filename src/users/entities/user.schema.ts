@@ -15,6 +15,12 @@ export class User{
     role : string 
     @Prop()
     gender  :string
+    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]  , default : []})
+    friends : User[]
+    @Prop({default : false})
+    isOnLine : boolean
+    @Prop()
+    socketId :string
     _id: mongoose.Types.ObjectId;
 }
 

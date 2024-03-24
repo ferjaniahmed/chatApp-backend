@@ -1,7 +1,9 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, ConnectedSocket, OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection, WsException} from '@nestjs/websockets';
 import { EventsService } from './events.service';
 import { Server , Socket } from 'socket.io';
-import { Logger } from '@nestjs/common';
+import { Logger, UseInterceptors } from '@nestjs/common';
+import { CacheInterceptor } from '@nestjs/cache-manager';
+import { UsersService } from 'src/users/users.service';
 
 @WebSocketGateway({namespace : "events"})
 export class EventsGateway implements OnGatewayConnection , OnGatewayDisconnect {
@@ -15,13 +17,24 @@ export class EventsGateway implements OnGatewayConnection , OnGatewayDisconnect 
 
   constructor(
     private readonly eventsService: EventsService , 
+    private readonly userService : UsersService
   ) {}
 
 
-  handleConnection(client: Socket, ...args: any[]) {
-    client.emit("connection" , "You are connected to the server.")
-    this.clients.set(client.id , client)
-    console.log(this.clients.keys())
+  async handleConnection(client: Socket, ...args: any[]) {
+    //TODO - add socket ID to the connected user
+    const {userId} = client.handshake.query
+    if(userId && userId.length > 0){
+      const user = await this.userService.updadeSocket(userId as string , client.id)
+      if(user){
+        client.emit("connection" , "You are connected to the server.")
+        this.clients.set(client.id , client)
+        console.log(this.clients.keys())
+      }
+    }else{
+      throw new WsException("need user ID to connect at the server")
+    }
+    
   }
 
 
@@ -48,6 +61,7 @@ export class EventsGateway implements OnGatewayConnection , OnGatewayDisconnect 
   }
 
 
+  @UseInterceptors(CacheInterceptor)
   @SubscribeMessage('findAllMessage')
   async findAll(@ConnectedSocket() socket : Socket, @MessageBody() data : any){
     const {senderId , receiverId} = data

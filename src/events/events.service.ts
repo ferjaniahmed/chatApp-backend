@@ -14,10 +14,6 @@ export class EventsService {
     return await this.messageService.findAllMessagesbetweenTwo(senderId , receiverId) ;
   }
 
-  update(id: number, updateEventDto) {  
-    return `This action updates a #${id} event`;
-  }
-
   async remove(id: string) {
     return await this.messageService.remove(id);
   }
